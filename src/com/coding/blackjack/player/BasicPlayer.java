@@ -13,9 +13,11 @@ public class BasicPlayer extends Player {
 
 	@Override
 	public void play(Deck deck) {
+		// if you have an ace and you're higher than 18 then stand
 		if (Collections.max(getPoints()) > 18) {
 			System.out.println(getName() + " stands");
 		}
+		// keep drawing cards if you have less than 17
 		while (Collections.min(getPoints()) < 17) {
 			Card newCard = draw(deck);
 			System.out.println(getName() + " draws " + newCard.toString() + " for " + getPoints());

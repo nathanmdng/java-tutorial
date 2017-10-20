@@ -16,10 +16,15 @@ public class Game {
 	
 	public static void main(String[] args) {
 		Game game = new Game(5);
+		System.out.println("=== Dealing cards ===");
 		game.deal();
+		System.out.println("=== Begin game state ===");
 		game.showGameState();
+		System.out.println("=== Players draw cards ===");
 		game.playRound();
+		System.out.println("=== End game state ===");
 		game.showGameState();
+		System.out.println("=== Winners ===");
 		List<Player> winners = game.calculateWinners();
 		for (Player winner : winners) {
 			System.out.println(winner.getName() + " wins with " + winner.getFinalPoints());
@@ -49,8 +54,11 @@ public class Game {
 	}
 	
 	private List<Player> calculateWinners() {
+		// filter out any player who has busted
 		List<Player> playersInGame = players.stream().filter(p -> !p.busts()).collect(Collectors.toList());
+		// the best hand is the highest score of players who haven't busted
 		int bestHand = Collections.max(playersInGame.stream().map(p -> p.getFinalPoints()).collect(Collectors.toList()));
+		// anyone who has this score wins the game
 		return players.stream().filter(p -> p.getFinalPoints() == bestHand).collect(Collectors.toList());
 	}
 	
