@@ -1,7 +1,12 @@
 package com.coding.blackjack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.coding.blackjack.player.BasicPlayer;
+import com.coding.blackjack.player.Player;
 
 public class Game {
 
@@ -11,8 +16,14 @@ public class Game {
 	
 	public static void main(String[] args) {
 		Game game = new Game(5);
-		game.start();
+		game.deal();
 		game.showGameState();
+		game.playRound();
+		game.showGameState();
+		List<Player> winners = game.calculateWinners();
+		for (Player winner : winners) {
+			System.out.println(winner.getName() + " wins with " + winner.getFinalPoints());
+		}
 	}
 	
 	public Game(int numPlayers) {
@@ -26,14 +37,26 @@ public class Game {
 		}
 	}
 	
-	private void start() {
+	private void playRound() {
+		for (Player player : players) {
+			player.play(deck);
+		}
+	}
+	
+	private void deal() {
 		createPlayers();
 		dealCards();
 	}
 	
+	private List<Player> calculateWinners() {
+		List<Player> playersInGame = players.stream().filter(p -> !p.busts()).collect(Collectors.toList());
+		int bestHand = Collections.max(playersInGame.stream().map(p -> p.getFinalPoints()).collect(Collectors.toList()));
+		return players.stream().filter(p -> p.getFinalPoints() == bestHand).collect(Collectors.toList());
+	}
+	
 	private void createPlayers() {		
 		for (int i = 1; i <= numPlayers; i++) {
-			players.add(new Player("Player " + i));
+			players.add(new BasicPlayer("Player " + i));
 		}
 	}
 	
